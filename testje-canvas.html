@@ -1,85 +1,89 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Tx Timeline with visuals and sounds</title>
-    <style type="text/css">
-      html, body { 
-        width: 100%; 
-        height: 100%; 
-        margin: 0px; }
-    </style>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <style type="text/css">
+  html, body { width: 100%; height: 100%; margin: 0px; }
+  </style>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.time.js"></script>
+  
+    
 
     <script type="text/javascript">
-         
+       
     </script>
   </head>
-  <body> 
+  <body>
+    
 
-    <canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
-    Your browser does not support the HTML5 canvas tag.
-    </canvas>
+<canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
 
-    <script>
+<script>
 
-      var jqxhr = $.getJSON("http://localhost:8080/simple-tx.json")
-                .done(function(json) {
-                  
-                  reformattedArray = json.transactions.map( function(tx){ 
-                       return [tx.verwerkingsDatum, tx.saldoNaBoeking];
-                    });
-                  reformattedArray.splice(0,0, ["aa", "bb"]);
 
-                  drawChart(reformattedArray);
-                });
 
-      // var data = [
-      //            ['2015-03-14', 120],
-      //            ['2015-02-10',  -30],
-      //            ['2015-02-10',  10]
-      //          ];
 
-      function drawChart(data) {
-        var c = document.getElementById("myCanvas");
-        var w = window.innerWidth; 
-        var h = window.innerHeight;
-        var y;
+var jqxhr = $.getJSON( "http://localhost:8080/simple-tx.json" )
+          .done(function(json) {
+            
+            reformattedArray = json.transactions.map( function(tx){ 
+                 return [tx.verwerkingsDatum, tx.saldoNaBoeking];
+              });
+            reformattedArray;
 
-        var ctx = c.getContext("2d");
-        ctx.canvas.width = w; 
-        ctx.canvas.height = h;
+            drawChart(reformattedArray);
+          });
 
-        var barWidth = 20;
+// var data = [
+//            ['2015-03-14', 120],
+//            ['2015-02-10',  -30],
+//            ['2015-02-10',  10]
+//          ];
 
-        for (i=0; i < data.length; i++) {
-          ctx.fillStyle = getRandomColor();
-          var amount = data[i][1];
-          y = i*barWidth + i*5;
-          var maxRatio = (w/2) / Math.log(20000);
-          
-          barLength = Math.log(Math.abs(amount)) * maxRatio;
-          console.log("barLength="+barLength+", amount="+amount);
-          
-          if (amount < 0) barLength = -barLength;
 
-          ctx.fillRect(w / 2, y, barLength, barWidth);
-        }
-        // ctx.fillStyle = "#FF0000";
-        // ctx.fillRect(w / 2,0,150,20);
+function drawChart(data) {
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    var w = window.innerWidth; 
+    var h = window.innerHeight;
 
-        // ctx.fillStyle = "#FF00FF";
-        // ctx.fillRect(40,20,w / 2 - 40,20);
-      }
+    ctx.canvas.width = w; 
+    ctx.canvas.height = h;
+    var y;
+    var barWidth = 20;
 
-      function getRandomColor() { 
-        var letters = '0123456789ABCDEF'.split(''); 
-        var color = '#'; 
-        for (var i = 0; i < 6; i++ ) { 
-          color += letters[Math.floor(Math.random() * 16)];
-        } 
-        return color;
-      }
+    var source = Rx.Observable.interval(1000).take(data.length)
 
-    </script>
+    source.map( function (v) {
+      return { "cnt":v, "value":data[v] };
+    }).subscribe(
+      function (x) {
+        console.log(x);
+        drawBar(x);
+      });
+
+    function drawBar(d) {
+        ctx.fillStyle = getRandomColor();
+        var amount = d.value[1];
+        y = d.cnt*barWidth + d.cnt*5;
+        var maxRatio = (w/2) / Math.log(20000);
+        barLength = Math.log(Math.abs(amount)) * maxRatio;
+        console.log("barLength="+barLength+", amount="+amount);
+        if (amount < 0) barLength = -barLength;
+        ctx.fillRect(w / 2, y, barLength, barWidth);
+    }
+
+    
+}
+
+
+function getRandomColor() { var letters = '0123456789ABCDEF'.split(''); var color = '#'; for (var i = 0; i < 6; i++ ) { color += letters[Math.floor(Math.random() * 16)]; } return color; }
+
+</script>
+
+
   </body>
 </html>
