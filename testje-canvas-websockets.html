@@ -19,88 +19,69 @@
   <canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
     Your browser does not support the HTML5 canvas tag.
   </canvas>
-  <audio style="display: none;" preload id="giggle" src="snd/giggle.mp3" type="audio/mpeg">
+  <audio style="display: none;" preload id="cash" src="snd/cash.mp3" type="audio/mpeg">
   <audio style="display: none;" preload id="doh" src="snd/doh.mp3" type="audio/mpeg">
 
-<script>
+  <script>
 
-var connected = document.getElementById('connected'), 
-messages = document.getElementById('messages'),
-conn = {},
-state = document.getElementById('status');
-
-
-function appendMessage(msg) {
-  var li = document.createElement("li");
-  li.appendChild(document.createTextNode(msg));
-  messages.appendChild(li);
-}
+    var connected = document.getElementById('connected'), 
+    messages = document.getElementById('messages'),
+    conn = {},
+    state = document.getElementById('status');
 
 
-    function openConnection() {
-  // uses global 'conn' object
-  if (conn.readyState === undefined || conn.readyState > 1) {
-    console.log("opening websocket");
-    conn = new WebSocket('ws://localhost:3000/echo');    
-    conn.onopen = function () {
-      console.log(" Socket onopen ");
-    };
-
-    conn.onmessage = function (event) {
-       console.log("event.data = '" + event.data +"'");
-      //var message = event.data; //JSON.parse(event.data);
-      var message = JSON.parse(event.data);
-      
-      //appendMessage(event.data);   // voeg toe aan scherm
-      drawBar(message);
-      console.log("onmessage");
-      console.log(message);
-    };
-    
-    conn.onclose = function (event) {
-      console.log(" Socket onclose ");
-    };
-  }
-}
+    function appendMessage(msg) {
+      var li = document.createElement("li");
+      li.appendChild(document.createTextNode(msg));
+      messages.appendChild(li);
+    }
 
 
+        function openConnection() {
+      // uses global 'conn' object
+      if (conn.readyState === undefined || conn.readyState > 1) {
+        console.log("opening websocket");
+        conn = new WebSocket('ws://localhost:3000/echo');    
+        conn.onopen = function () {
+          console.log(" Socket onopen ");
+        };
 
-if (window.WebSocket === undefined) {
-  state.innerHTML = 'Sockets not supported';
-  state.className = 'fail';
-} 
+        conn.onmessage = function (event) {
+           console.log("event.data = '" + event.data +"'");
+          //var message = event.data; //JSON.parse(event.data);
+          var message = JSON.parse(event.data);
+          
+          //appendMessage(event.data);   // voeg toe aan scherm
+          drawBar(message);
+          console.log("onmessage");
+          console.log(message);
+        };
+        
+        conn.onclose = function (event) {
+          console.log(" Socket onclose ");
+        };
+      }
+    }
 
+    if (window.WebSocket === undefined) {
+      state.innerHTML = 'Sockets not supported';
+      state.className = 'fail';
+    } 
 
-/////
-
-
-
-
-  
     var graph;
     var xPadding = 30;
     var yPadding = 30;
     var month;
     var y = 0;
-      var barWidth = 20;
- 
+    var barWidth = 20;
 
-       var c = document.getElementById("myCanvas");
-      var ctx = c.getContext("2d");
-      var w = window.innerWidth; 
-      var h = window.innerHeight;
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    var w = window.innerWidth; 
+    var h = window.innerHeight;
 
-      ctx.canvas.width = w; 
-      ctx.canvas.height = h;     
-    
-   
-
-
-    
-      
-      
-
-      
+    ctx.canvas.width = w; 
+    ctx.canvas.height = h;
 
       function shiftUp(margin) {
         // shift everything to the left:
@@ -128,26 +109,31 @@ if (window.WebSocket === undefined) {
         var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
         // console.log("finalBarLength="+finalBarLength+", amount="+amount)
         
-        //playSound(amount);
+        playSound(amount);
 
         var percent = 0;
         animate();
         function animate() {
-            // if not 100% done, request another frame
-            if (percent < 100) {
-              requestAnimationFrame(animate);
-              percent=percent+2; // increments with 1 cause incorrect behaviour
-            }
-            // Drawing code goes here
-            var tmpBarLength = finalBarLength * percent / 100;
-            if (amount > 0) {
-              ctx.fillStyle = getColor(percent, true);
-            } else {
-              tmpBarLength = -tmpBarLength;
-              ctx.fillStyle = getColor(percent, false);
-            }
-            ctx.fillRect(w/2, y, tmpBarLength, barWidth); 
+          // if not 100% done, request another frame
+          if (percent < 100) {
+            requestAnimationFrame(animate);
+            percent=percent+2; // increments with 1 cause incorrect behaviour
           }
+          // Drawing code goes here
+          var tmpBarLength = finalBarLength * percent / 100;
+          if (amount > 0) {
+            ctx.fillStyle = getColor(percent, true);
+          } else {
+            tmpBarLength = -tmpBarLength;
+            ctx.fillStyle = getColor(percent, false);
+          }
+          ctx.fillRect(w/2, y, tmpBarLength, barWidth); 
+        }
+
+        function playSound(amount) {
+          var sound = amount > 0 ? 'cash' : 'doh';
+          document.getElementById(sound).play();
+        }
       }
 
       
@@ -168,11 +154,6 @@ if (window.WebSocket === undefined) {
         ctx.lineTo(d.value[2], y);
         ctx.stroke();
       
-      }
-
-      function playSound(amount) {
-        var sound = amount > 0 ? 'giggle' : 'doh';
-        document.getElementById(sound).play();
       }
 
       function getColor(range, positive) {
