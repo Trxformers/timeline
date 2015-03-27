@@ -46,9 +46,8 @@
 
       ctx.canvas.width = w; 
       ctx.canvas.height = h;
-      var y;
+      var y = 0;
       var barWidth = 20;
-
       var source = Rx.Observable.interval(1000).take(data.length)
 
       source.map( function (v) {
@@ -60,27 +59,32 @@
         //   month = month;
         //   drawSeparator();
         // }
-        shiftDown(barWidth+5);
         drawBar(x);
         // drawLine(x);
       });
 
-      function shiftDown(margin) {
+      function shiftUp(margin) {
         // shift everything to the left:
-        var imageData = ctx.getImageData(0, -margin, ctx.canvas.width, ctx.canvas.height);
+        var imageData = ctx.getImageData(0, margin, ctx.canvas.width, ctx.canvas.height-margin);
         ctx.putImageData(imageData, 0, 0);
         // now clear the right-most pixels:
-        ctx.clearRect(ctx.canvas.width, 0, -margin, ctx.canvas.height+margin);
+        ctx.clearRect(ctx.canvas.width, margin, 0, ctx.canvas.height-margin);
       }
 
       function drawBar(d) {
         var amount = d.value[1];
-        y = 5;
+        var margin = barWidth+5;
+        console.log("y:" + y);
+        if (y > h-100) {
+          shiftUp(margin);
+        } else {
+          y += margin;
+        }
         var maxRatio = (w/2) / Math.log(20000);
         var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
-        console.log("finalBarLength="+finalBarLength+", amount="+amount)
+        // console.log("finalBarLength="+finalBarLength+", amount="+amount)
         
-        playSound(amount);
+        //playSound(amount);
 
         var percent = 0;
         animate();
@@ -109,28 +113,29 @@
       //   ctx.moveTo(w/2, y);
       // }
 
-      // function drawLine(d) {
+      function drawLine(d) {
         
-      //   ctx.lineWidth = 6;
-      //   ctx.strokeStyle = '#333';
-      //   ctx.font = 'italic 8pt sans-serif';
-      //   ctx.textAlign = "center";
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#333';
+        ctx.font = 'italic 8pt sans-serif';
+        ctx.textAlign = "center";
 
-      //   y = d.cnt*barWidth + d.cnt*5; 
-      //   ctx.beginPath();
+        y = 5; 
+        ctx.beginPath();
+        //goto first point
+        console.log('start at x:' + (w/2) + ' y:' + y-barWidth);
+        ctx.moveTo(w/2, y-barWidth);
+        // ctx.moveTo(points[0].startX, points[0].startY);
 
-      //   //goto first point
-      //   //ctx.moveTo(w/2, y);
-      //   ctx.moveTo(points[0].startX, points[0].startY);
-
-      //   var counter = 1,
-      //   inter = setInterval(function() {
-      //       //create interval, it will
-      //       //iterate over pointes and when counter > length
-      //       //will destroy itself
-      //       var point = points[counter++];
-      //       ctx.lineTo(point.startX, point.startY); 
-      //       ctx.stroke();
+        // var counter = 1,
+        // inter = setInterval(function() {
+            //create interval, it will
+            //iterate over pointes and when counter > length
+            //will destroy itself
+      //      var point = points[counter++];
+        console.log('end at x:' + d.value[2] + ' y:' + y);
+        ctx.lineTo(d.value[2], y);
+        ctx.stroke();
       //       if (counter >= points.length) {
       //          clearInterval(inter);
       //       }
@@ -151,7 +156,7 @@
       //     ctx.quadraticCurveTo(w/2, tmpLineLength, y+4, w/2);
       //     ctx.stroke();  
       //   }
-      // }
+      }
 
       function playSound(amount) {
         var sound = amount > 0 ? 'giggle' : 'doh';
