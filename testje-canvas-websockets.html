@@ -19,66 +19,10 @@
   <canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
     Your browser does not support the HTML5 canvas tag.
   </canvas>
-<<<<<<< HEAD
   <canvas id="myCanvasTop" width="100%" style="border:1px solid #c3c3c3;">
     Your browser does not support the HTML5 canvas tag.
   </canvas>  
 
-  <audio style="display: none;" preload id="giggle" src="snd/giggle.mp3" type="audio/mpeg">
-  <audio style="display: none;" preload id="doh" src="snd/doh.mp3" type="audio/mpeg">
-
-<script>
-
-var connected = document.getElementById('connected'), 
-messages = document.getElementById('messages'),
-conn = {},
-state = document.getElementById('status');
-
-
-function appendMessage(msg) {
-  var li = document.createElement("li");
-  li.appendChild(document.createTextNode(msg));
-  messages.appendChild(li);
-}
-
-
-    function openConnection() {
-  // uses global 'conn' object
-  if (conn.readyState === undefined || conn.readyState > 1) {
-    console.log("opening websocket");
-    conn = new WebSocket('ws://localhost:3000/echo');    
-    conn.onopen = function () {
-      console.log(" Socket onopen ");
-    };
-
-    conn.onmessage = function (event) {
-       console.log("event.data = '" + event.data +"'");
-      //var message = event.data; //JSON.parse(event.data);
-      var message = JSON.parse(event.data);
-      
-      //appendMessage(event.data);   // voeg toe aan scherm
-      drawBar(message);
-      drawLine(y, message.saldoNaBoeking);
-      console.log("onmessage");
-      console.log(message);
-    };
-    
-    conn.onclose = function (event) {
-      console.log(" Socket onclose ");
-    };
-  }
-}
-
-
-
-if (window.WebSocket === undefined) {
-  state.innerHTML = 'Sockets not supported';
-  state.className = 'fail';
-} 
-
-
-/////
-=======
   <audio style="display: none;" preload id="cash" src="snd/cash.mp3" type="audio/mpeg">
   <audio style="display: none;" preload id="doh" src="snd/doh.mp3" type="audio/mpeg">
 
@@ -113,6 +57,7 @@ if (window.WebSocket === undefined) {
           
           //appendMessage(event.data);   // voeg toe aan scherm
           drawBar(message);
+          drawLine(y, message.saldoNaBoeking);
           console.log("onmessage");
           console.log(message);
         };
@@ -127,14 +72,13 @@ if (window.WebSocket === undefined) {
       state.innerHTML = 'Sockets not supported';
       state.className = 'fail';
     } 
->>>>>>> 593324b71ab23067e2afde3a36ce196e80253f20
 
     var graph;
     var xPadding = 30;
     var yPadding = 30;
     var month;
     var y = 0;
-<<<<<<< HEAD
+
       var barWidth = 20;
  
 
@@ -149,18 +93,6 @@ if (window.WebSocket === undefined) {
       ctx.canvas.height = h;
       ctxTop.canvas.width = w;
       ctxTop.canvas.height = h;
-    
-=======
-    var barWidth = 20;
-
-    var c = document.getElementById("myCanvas");
-    var ctx = c.getContext("2d");
-    var w = window.innerWidth; 
-    var h = window.innerHeight;
-
-    ctx.canvas.width = w; 
-    ctx.canvas.height = h;
->>>>>>> 593324b71ab23067e2afde3a36ce196e80253f20
 
       function shiftUp(margin) {
         // shift everything to the left:
@@ -199,19 +131,6 @@ if (window.WebSocket === undefined) {
           if (percent < 100) {
             requestAnimationFrame(animate);
             percent=percent+2; // increments with 1 cause incorrect behaviour
-<<<<<<< HEAD
-          }
-          // Drawing code goes here
-          var tmpBarLength = finalBarLength * percent / 100;
-          if (amount > 0) {
-            ctx.fillStyle = getColor(percent, true);
-          } else {
-            tmpBarLength = -tmpBarLength;
-            ctx.fillStyle = getColor(percent, false);
-          }
-          ctx.fillRect(w/2, y, tmpBarLength, barWidth); 
-        }
-=======
           }
           // Drawing code goes here
           var tmpBarLength = finalBarLength * percent / 100;
@@ -228,7 +147,6 @@ if (window.WebSocket === undefined) {
           var sound = amount > 0 ? 'cash' : 'doh';
           document.getElementById(sound).play();
         }
->>>>>>> 593324b71ab23067e2afde3a36ce196e80253f20
       }
 
       //
