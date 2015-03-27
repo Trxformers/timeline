@@ -19,7 +19,7 @@
 
     <script>
 
-      var txdata = $.getJSON( "http://localhost:8080/simple-tx.json" )
+      var txdata = $.getJSON("http://localhost:8080/simple-tx.json")
                 .done(function(json) {
                   
                   reformattedArray = json.transactions.map( function(tx) { 
@@ -29,12 +29,6 @@
 
                   drawChart(reformattedArray);
                 });
-
-        // var data = [
-        //            ['2015-03-14', 120],
-        //            ['2015-02-10',  -30],
-        //            ['2015-02-10',  10]
-        //          ];
 
       function drawChart(data) {
           var c = document.getElementById("myCanvas");
@@ -62,22 +56,25 @@
             var amount = d.value[1];
             y = d.cnt*barWidth + d.cnt*5;
             var maxRatio = (w/2) / Math.log(20000);
-            barLength = Math.log(Math.abs(amount)) * maxRatio;
-            console.log("barLength="+barLength+", amount="+amount);
-            if (amount < 0) barLength = -barLength;
-            ctx.fillRect(w/2, y, barLength, barWidth);
-            // var fps = 5;
-            // var percent = 0;
-            // animate();
-            // function animate() {
-            //     // if not 100% done, request another frame
-            //     if (percent++ < 100) {
-            //         requestAnimationFrame(animate);
-            //     }
-            //     // Drawing code goes here
-            //     var barLength = (w/2) * percent / 100;
-            //     ctx.fillRect(w/2, y, barLength, barWidth);
-            // }
+            var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
+            
+            console.log("finalBarLength="+finalBarLength+", amount="+amount);
+            // ctx.fillRect(w/2, y, barLength, barWidth);
+
+            var percent = 0;
+            animate();
+            function animate() {
+                // if not 100% done, request another frame
+                if (percent < 100) {
+                    requestAnimationFrame(animate);
+                    percent=percent+2;
+                }
+                // Drawing code goes here
+                var tmpBarLength = finalBarLength * percent / 100;
+                // console.log(tmpBarLength);
+                if (amount < 0) tmpBarLength = -tmpBarLength;
+                ctx.fillRect(w/2, y, tmpBarLength, barWidth);
+            }
           }    
       }
 
