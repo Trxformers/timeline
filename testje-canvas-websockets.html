@@ -26,7 +26,8 @@
 
   <audio style="display: none;" preload id="cash" src="snd/cash.mp3" type="audio/mpeg">
   <audio style="display: none;" preload id="woodblock" src="snd/woodblock.mp3" type="audio/mpeg">
-
+  <audio style="display: none;" preload id="doh" src="snd/doh.mp3" type="audio/mpeg">
+  <audio style="display: none;" preload id="woohoo" src="snd/woohoo.mp3" type="audio/mpeg">
   <script>
 
     var connected = document.getElementById('connected'), 
@@ -146,6 +147,11 @@
 
         function playSound(amount) {
           var sound = amount > 0 ? 'cash' : 'woodblock';
+          if (amount < -1000) {
+              sound = 'doh';
+          } else if (amount > 2700) {
+              sound = 'woohoo';
+          }
           document.getElementById(sound).play();
         }
       }
