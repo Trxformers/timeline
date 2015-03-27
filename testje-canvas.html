@@ -52,7 +52,6 @@
             });
 
           function drawBar(d) {
-            ctx.fillStyle = getRandomColor();
             var amount = d.value[1];
             y = d.cnt*barWidth + d.cnt*5;
             var maxRatio = (w/2) / Math.log(20000);
@@ -72,9 +71,19 @@
                 var tmpBarLength = finalBarLength * percent / 100;
                 // console.log(tmpBarLength);
                 if (amount < 0) tmpBarLength = -tmpBarLength;
+                ctx.fillStyle = getColor(percent, amount > 0);
                 ctx.fillRect(w/2, y, tmpBarLength, barWidth);
             }
           }    
+      }
+
+      function getColor(range, positive) {
+        if (positive) {
+          var color = '#00' + range + '00';
+        } else {
+          var color = '#' + range + '0000';
+        }
+        return color;
       }
 
       function getRandomColor() { 
