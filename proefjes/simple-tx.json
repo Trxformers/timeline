@@ -1,0 +1,40 @@
+{
+	"account" : {
+		"iban": "NL43RABO0000000011",
+		"name": "Betaalrekening",
+		"currentBalance": 30000
+	}
+	,
+	"transactions":
+ 		[
+  			{
+  				"verwerkingsDatum": "2015-03-21",
+   				"saldoNaBoeking": 1200.05
+   			},
+    			{
+  				"verwerkingsDatum": "2015-03-02",
+   				"saldoNaBoeking": 4
+   			},
+  			{
+  				"verwerkingsDatum": "2015-02-14",
+   				"saldoNaBoeking": 10000
+   			},
+  			{
+  				"verwerkingsDatum": "2015-02-11",
+   				"saldoNaBoeking": -300
+   			},
+  			{
+  				"verwerkingsDatum": "2015-02-10",
+   				"saldoNaBoeking": 50.90
+   			},
+  			{
+  				"verwerkingsDatum": "2014-12-20",
+   				"saldoNaBoeking": -4000
+   			},
+			{
+  				"verwerkingsDatum": "2014-12-15",
+   				"saldoNaBoeking": 4500.05
+   			}
+
+   		]
+}
