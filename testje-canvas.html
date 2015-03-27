@@ -57,9 +57,8 @@
             y = d.cnt*barWidth + d.cnt*5;
             var maxRatio = (w/2) / Math.log(20000);
             var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
-            
+
             console.log("finalBarLength="+finalBarLength+", amount="+amount);
-            // ctx.fillRect(w/2, y, barLength, barWidth);
 
             var percent = 0;
             animate();
@@ -67,7 +66,7 @@
                 // if not 100% done, request another frame
                 if (percent < 100) {
                     requestAnimationFrame(animate);
-                    percent=percent+2;
+                    percent=percent+2; // increments with 1 cause incorrect behaviour
                 }
                 // Drawing code goes here
                 var tmpBarLength = finalBarLength * percent / 100;

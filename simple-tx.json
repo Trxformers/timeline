@@ -34,7 +34,27 @@
 			  {
   				"verwerkingsDatum": "2015-02-10",
    				"saldoNaBoeking": 4500.05
-   			}
+        },
+          {
+          "verwerkingsDatum": "2015-02-14",
+          "saldoNaBoeking": 4
+        },
+        {
+          "verwerkingsDatum": "2015-02-14",
+          "saldoNaBoeking": 10000
+        },
+        {
+          "verwerkingsDatum": "2015-02-14",
+          "saldoNaBoeking": -300
+        },
+        {
+          "verwerkingsDatum": "2015-02-14",
+          "saldoNaBoeking": 50.90
+        },
+        {
+          "verwerkingsDatum": "2015-02-14",
+          "saldoNaBoeking": -4000
+        }
 
    		]
 }
