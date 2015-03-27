@@ -1,0 +1,155 @@
+{
+"account" : {
+"iban": "NL43RABO0000000011",
+"name": "Betaalrekening",
+"currentBalance": 5275
+}
+,
+"transactions":
+[
+  {
+  "verwerkingsDatum": "2015-03-27",
+         "bedrag": -50,
+  "saldoNaBoeking": 5275
+  },
+    {
+  "verwerkingsDatum": "2015-03-27",
+         "bedrag": -100,
+  "saldoNaBoeking": 5325
+  },
+    {
+  "verwerkingsDatum": "2015-03-26",
+         "bedrag": -15,
+  "saldoNaBoeking": 5425
+  },
+    {
+  "verwerkingsDatum": "2015-03-25",
+         "bedrag": 150,
+  "saldoNaBoeking": 5440
+  },
+    {
+  "verwerkingsDatum": "2015-03-24",
+         "bedrag": 2800,
+  "saldoNaBoeking": 5590
+  },
+    {
+  "verwerkingsDatum": "2015-03-23",
+         "bedrag": -120,
+  "saldoNaBoeking": 2790
+  },
+    {
+  "verwerkingsDatum": "2015-03-23",
+         "bedrag": -40,
+  "saldoNaBoeking": 2910
+  },
+    {
+  "verwerkingsDatum": "2015-03-22",
+         "bedrag": 25,
+  "saldoNaBoeking": 2950
+  },  {
+  "verwerkingsDatum": "2015-03-21",
+         "bedrag": 10,
+  "saldoNaBoeking": 2925
+  },
+    {
+  "verwerkingsDatum": "2015-03-20",
+         "bedrag": -300,
+  "saldoNaBoeking": 2915
+  },
+    {
+  "verwerkingsDatum": "2015-03-19",
+         "bedrag": -130,
+  "saldoNaBoeking": 3215
+  },
+    {
+  "verwerkingsDatum": "2015-03-18",
+         "bedrag": -20,
+  "saldoNaBoeking": 3345
+  },  {
+  "verwerkingsDatum": "2015-03-17",
+         "bedrag": -75,
+  "saldoNaBoeking": 3365
+  },
+    {
+  "verwerkingsDatum": "2015-03-16",
+         "bedrag": 100,
+  "saldoNaBoeking": 3440
+  },
+    {
+  "verwerkingsDatum": "2015-03-15",
+         "bedrag": -120,
+  "saldoNaBoeking": 3340
+  },
+    {
+  "verwerkingsDatum": "2015-03-14",
+         "bedrag": -20,
+  "saldoNaBoeking": 3460
+  },  {
+  "verwerkingsDatum": "2015-03-10",
+         "bedrag": -25,
+  "saldoNaBoeking": 3480
+  },
+    {
+  "verwerkingsDatum": "2015-03-09",
+         "bedrag": -200,
+  "saldoNaBoeking": 3505
+  },
+    {
+  "verwerkingsDatum": "2015-03-08",
+         "bedrag": -10,
+  "saldoNaBoeking": 3705
+  },
+    {
+  "verwerkingsDatum": "2015-03-07",
+         "bedrag": -5,
+  "saldoNaBoeking": 3715
+  },  {
+  "verwerkingsDatum": "2015-03-06",
+         "bedrag": -300,
+  "saldoNaBoeking": 3720
+  },
+    {
+  "verwerkingsDatum": "2015-03-02",
+         "bedrag": -1100,
+  "saldoNaBoeking": 4020
+  },
+    {
+  "verwerkingsDatum": "2015-02-26",
+         "bedrag": -20,
+  "saldoNaBoeking": 5120
+  },
+    {
+  "verwerkingsDatum": "2015-02-25",
+         "bedrag": -150,
+  "saldoNaBoeking": 5140
+  },  {
+  "verwerkingsDatum": "2015-02-24",
+         "bedrag": 2800,
+  "saldoNaBoeking": 5290
+  },
+    {
+  "verwerkingsDatum": "2015-02-23",
+         "bedrag": -10,
+  "saldoNaBoeking": 2490
+  },
+    {
+  "verwerkingsDatum": "2015-03-22",
+         "bedrag": -15,
+  "saldoNaBoeking": 2500
+  },
+    {
+  "verwerkingsDatum": "2015-03-21",
+         "bedrag": -30,
+  "saldoNaBoeking": 2515
+  },  {
+  "verwerkingsDatum": "2015-03-20",
+         "bedrag": 5,
+  "saldoNaBoeking": 2545
+  },
+    {
+  "verwerkingsDatum": "2015-03-19",
+         "bedrag": 40,
+  "saldoNaBoeking": 2540
+  }
+  ]
+}

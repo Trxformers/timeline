@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    html, body { width: 100%; height: 100%; margin: 0px;
+    background: url("background.png") center no-repeat; };
+
+  </style>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.time.js"></script>
+
+  <script type="text/javascript">
+
+  </script>
+
+</head>
+<body>
+  <canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
+    Your browser does not support the HTML5 canvas tag.
+  </canvas>
+  <audio style="display: none;" preload id="giggle" src="snd/giggle.mp3" type="audio/mpeg">
+  <audio style="display: none;" preload id="doh" src="snd/doh.mp3" type="audio/mpeg">
+
+<script>
+
+var connected = document.getElementById('connected'), 
+messages = document.getElementById('messages'),
+conn = {},
+state = document.getElementById('status');
+
+
+function appendMessage(msg) {
+  var li = document.createElement("li");
+  li.appendChild(document.createTextNode(msg));
+  messages.appendChild(li);
+}
+
+
+    function openConnection() {
+  // uses global 'conn' object
+  if (conn.readyState === undefined || conn.readyState > 1) {
+    console.log("opening websocket");
+    conn = new WebSocket('ws://localhost:3000/echo');    
+    conn.onopen = function () {
+      console.log(" Socket onopen ");
+    };
+
+    conn.onmessage = function (event) {
+       console.log("event.data = '" + event.data +"'");
+      //var message = event.data; //JSON.parse(event.data);
+      var message = JSON.parse(event.data);
+      
+      //appendMessage(event.data);   // voeg toe aan scherm
+      drawBar(message);
+      console.log("onmessage");
+      console.log(message);
+    };
+    
+    conn.onclose = function (event) {
+      console.log(" Socket onclose ");
+    };
+  }
+}
+
+
+
+if (window.WebSocket === undefined) {
+  state.innerHTML = 'Sockets not supported';
+  state.className = 'fail';
+} 
+
+
+/////
+
+
+
+
+  
+    var graph;
+    var xPadding = 30;
+    var yPadding = 30;
+    var month;
+    var y = 0;
+      var barWidth = 20;
+ 
+
+       var c = document.getElementById("myCanvas");
+      var ctx = c.getContext("2d");
+      var w = window.innerWidth; 
+      var h = window.innerHeight;
+
+      ctx.canvas.width = w; 
+      ctx.canvas.height = h;     
+    
+   
+
+
+    
+      
+      
+
+      
+
+      function shiftUp(margin) {
+        // shift everything to the left:
+        var imageData = ctx.getImageData(0, margin, ctx.canvas.width, ctx.canvas.height-margin);
+        ctx.putImageData(imageData, 0, 0);
+        // now clear the right-most pixels:
+        ctx.clearRect(ctx.canvas.width, margin, 0, ctx.canvas.height-margin);
+      }
+
+      function drawBar(d) {
+        console.log("drawBar("+d+")");
+        console.log(d);
+
+
+        var amount = d.bedrag;
+        console.log("amount="+amount);
+        var margin = barWidth+5;
+        console.log("y:" + y);
+        if (y > h-100) {
+          shiftUp(margin);
+        } else {
+          y += margin;
+        }
+        var maxRatio = (w/2) / Math.log(20000);
+        var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
+        // console.log("finalBarLength="+finalBarLength+", amount="+amount)
+        
+        //playSound(amount);
+
+        var percent = 0;
+        animate();
+        function animate() {
+            // if not 100% done, request another frame
+            if (percent < 100) {
+              requestAnimationFrame(animate);
+              percent=percent+2; // increments with 1 cause incorrect behaviour
+            }
+            // Drawing code goes here
+            var tmpBarLength = finalBarLength * percent / 100;
+            if (amount > 0) {
+              ctx.fillStyle = getColor(percent, true);
+            } else {
+              tmpBarLength = -tmpBarLength;
+              ctx.fillStyle = getColor(percent, false);
+            }
+            ctx.fillRect(w/2, y, tmpBarLength, barWidth); 
+          }
+      }
+
+      
+      function drawLine(d) {
+        
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#333';
+        ctx.font = 'italic 8pt sans-serif';
+        ctx.textAlign = "center";
+
+        y = 5; 
+        ctx.beginPath();
+        //goto first point
+        console.log('start at x:' + (w/2) + ' y:' + y-barWidth);
+        ctx.moveTo(w/2, y-barWidth);
+
+        console.log('end at x:' + d.value[2] + ' y:' + y);
+        ctx.lineTo(d.value[2], y);
+        ctx.stroke();
+      
+      }
+
+      function playSound(amount) {
+        var sound = amount > 0 ? 'giggle' : 'doh';
+        document.getElementById(sound).play();
+      }
+
+      function getColor(range, positive) {
+        if (positive) {
+          return '#00' + range + '00';
+        } else {
+          return '#' + range + '0000';
+        }
+      }
+
+      function getRandomColor() { 
+        var letters = '0123456789ABCDEF'.split(''); 
+        var color = '#'; 
+        for (var i = 0; i < 6; i++) { 
+          color += letters[Math.floor(Math.random() * 16)]; 
+        } 
+        return color;
+      }
+    
+
+
+
+    // function getMaxY() {
+    //     var max = 0;
+         
+    //     for(var i = 0; i < data.values.length; i ++) {
+    //         if(data.values[i].Y > max) {
+    //             max = data.values[i].Y;
+    //         }
+    //     }
+    //     max += 10 - max % 10;
+    //     return max;
+    // }
+     
+    // function getXPixel(val) {
+    //     return ((graph.width() - xPadding) / data.values.length) * val + (xPadding * 1.5);
+    // }
+     
+    // function getYPixel(val) {
+    //     return graph.height() - (((graph.height() - yPadding) / getMaxY()) * val) - yPadding;
+    // }    
+
+
+   
+    openConnection();  
+
+  </script>
+
+
+</body>
+</html>
