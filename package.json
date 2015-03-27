@@ -1,0 +1,25 @@
+{
+  "name": "timeline",
+  "description": "Experience the Tx Timeline with visuals and sound",
+  "author": "Trxformers",
+  "version": "1.0.0",
+  "license": "MIT",
+  "homepage": "https://github.com/Trxformers/timeline",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Trxformers/timeline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Trxformers/timeline/issues"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./node/load-transactions.js & ./node_modules/.bin/http-server"
+  },
+  "dependencies": {
+    "express": "^4.12.3",
+    "express-ws": "^0.2.5",
+    "http-server": "^0.8.0",
+    "rx": "^2.4.6"
+  }
+}
