@@ -11,29 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.time.js"></script>
 
   <script type="text/javascript">
-    // var graph;
-    // var xPadding = 30;
-    // var yPadding = 30;
 
-    // function getMaxY() {
-    //     var max = 0;
-         
-    //     for(var i = 0; i < data.values.length; i ++) {
-    //         if(data.values[i].Y > max) {
-    //             max = data.values[i].Y;
-    //         }
-    //     }
-    //     max += 10 - max % 10;
-    //     return max;
-    // }
-     
-    // function getXPixel(val) {
-    //     return ((graph.width() - xPadding) / data.values.length) * val + (xPadding * 1.5);
-    // }
-     
-    // function getYPixel(val) {
-    //     return graph.height() - (((graph.height() - yPadding) / getMaxY()) * val) - yPadding;
-    // }
   </script>
 
 </head>
@@ -44,6 +22,10 @@
   <audio style="display: none;" preload id="giggle" src="snd/giggle.mp3" type="audio/mpeg">
   <audio style="display: none;" preload id="doh" src="snd/doh.mp3" type="audio/mpeg">
   <script>
+    var graph;
+    var xPadding = 30;
+    var yPadding = 30;
+    var month;
 
     var txdata = $.getJSON("http://localhost:8080/simple-tx.json")
                 .done(function(json) {
@@ -74,13 +56,26 @@
       }).subscribe(
       function (x) {
         console.log(x);
+        // if (x.value[3] == month) {
+        //   month = month;
+        //   drawSeparator();
+        // }
+        shiftDown(barWidth+5);
         drawBar(x);
-        drawLine(x);
+        // drawLine(x);
       });
+
+      function shiftDown(margin) {
+        // shift everything to the left:
+        var imageData = ctx.getImageData(0, -margin, ctx.canvas.width, ctx.canvas.height);
+        ctx.putImageData(imageData, 0, 0);
+        // now clear the right-most pixels:
+        ctx.clearRect(ctx.canvas.width, 0, -margin, ctx.canvas.height+margin);
+      }
 
       function drawBar(d) {
         var amount = d.value[1];
-        y = d.cnt*barWidth + d.cnt*5;
+        y = 5;
         var maxRatio = (w/2) / Math.log(20000);
         var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
         console.log("finalBarLength="+finalBarLength+", amount="+amount)
@@ -105,44 +100,103 @@
           }
           ctx.fillRect(w/2, y, tmpBarLength, barWidth); 
         }
+      }
 
-        // function drawLine(d) {
-        //   c.lineWidth = 2;
-        //   c.strokeStyle = '#333';
-        //   c.font = 'italic 8pt sans-serif';
-        //   c.textAlign = "center";
+      // function drawSeparator() {
+      //   ctx.lineWidth = 6;
+      //   ctx.strokeStyle = '#333';
+      //   ctx.beginPath();
+      //   ctx.moveTo(w/2, y);
+      // }
 
-        //   c.strokeStyle = '#f00';
-        //   c.beginPath();
-        //   y = d.cnt*barWidth + d.cnt*5;
-        //   c.moveTo(getXPixel(d.value[2]), getYPixel(d.value[2].Y));
-        //   c.lineTo(getXPixel(d.value[2]+20), getYPixel(d.value[i].Y));
-        //   c.stroke();          
-        // }
+      // function drawLine(d) {
+        
+      //   ctx.lineWidth = 6;
+      //   ctx.strokeStyle = '#333';
+      //   ctx.font = 'italic 8pt sans-serif';
+      //   ctx.textAlign = "center";
 
-        function playSound(amount) {
-          var sound = amount > 0 ? 'giggle' : 'doh';
-          document.getElementById(sound).play();
-        }
+      //   y = d.cnt*barWidth + d.cnt*5; 
+      //   ctx.beginPath();
 
-        function getColor(range, positive) {
-          if (positive) {
-            return '#00' + range + '00';
-          } else {
-            return '#' + range + '0000';
-          }
-        }
+      //   //goto first point
+      //   //ctx.moveTo(w/2, y);
+      //   ctx.moveTo(points[0].startX, points[0].startY);
 
-        function getRandomColor() { 
-          var letters = '0123456789ABCDEF'.split(''); 
-          var color = '#'; 
-          for (var i = 0; i < 6; i++) { 
-            color += letters[Math.floor(Math.random() * 16)]; 
-          } 
-          return color;
+      //   var counter = 1,
+      //   inter = setInterval(function() {
+      //       //create interval, it will
+      //       //iterate over pointes and when counter > length
+      //       //will destroy itself
+      //       var point = points[counter++];
+      //       ctx.lineTo(point.startX, point.startY); 
+      //       ctx.stroke();
+      //       if (counter >= points.length) {
+      //          clearInterval(inter);
+      //       }
+      //       console.log(counter);
+      //   }, 500);
+      //   ctx.stroke();
+
+      //   var percent = 0;
+      //   animate();
+      //   function animate() {
+      //     // if not 100% done, request another frame
+      //     if (percent < 100) {
+      //       requestAnimationFrame(animate);
+      //       percent=percent+2; // increments with 1 cause incorrect behaviour
+      //     }
+      //     // Drawing code goes here
+      //     var tmpLineLength = finalBarLength * percent / 100;
+      //     ctx.quadraticCurveTo(w/2, tmpLineLength, y+4, w/2);
+      //     ctx.stroke();  
+      //   }
+      // }
+
+      function playSound(amount) {
+        var sound = amount > 0 ? 'giggle' : 'doh';
+        document.getElementById(sound).play();
+      }
+
+      function getColor(range, positive) {
+        if (positive) {
+          return '#00' + range + '00';
+        } else {
+          return '#' + range + '0000';
         }
       }
+
+      function getRandomColor() { 
+        var letters = '0123456789ABCDEF'.split(''); 
+        var color = '#'; 
+        for (var i = 0; i < 6; i++) { 
+          color += letters[Math.floor(Math.random() * 16)]; 
+        } 
+        return color;
+      }
     }
+
+
+
+    function getMaxY() {
+        var max = 0;
+         
+        for(var i = 0; i < data.values.length; i ++) {
+            if(data.values[i].Y > max) {
+                max = data.values[i].Y;
+            }
+        }
+        max += 10 - max % 10;
+        return max;
+    }
+     
+    function getXPixel(val) {
+        return ((graph.width() - xPadding) / data.values.length) * val + (xPadding * 1.5);
+    }
+     
+    function getYPixel(val) {
+        return graph.height() - (((graph.height() - yPadding) / getMaxY()) * val) - yPadding;
+    }    
   </script>
 
 
