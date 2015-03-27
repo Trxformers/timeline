@@ -1,101 +1,113 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style type="text/css">
-      html, body { width: 100%; height: 100%; margin: 0px; }
-    </style>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.time.js"></script>
+<head>
+  <style type="text/css">
+  html, body { width: 100%; height: 100%; margin: 0px; }
+  </style>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/2.4.6/rx.time.js"></script>
 
-    <script type="text/javascript">
-         
-    </script>
-  </head>
-  <body>
-    <canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
+  <script type="text/javascript">
+  
+  </script>
+</head>
+<body>
+  <canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
     Your browser does not support the HTML5 canvas tag.
-    </canvas>
+  </canvas>
 
-    <script>
+  <audio style="display: none;" id="up" preload src="up.wav">
+    <audio style="display: none;" id="down" preload src="down.wav">
+      <script>
 
       var txdata = $.getJSON("http://localhost:8080/simple-tx.json")
-                .done(function(json) {
-                  
-                  reformattedArray = json.transactions.map( function(tx) { 
-                    return [tx.verwerkingsDatum, tx.saldoNaBoeking];
-                  });
-                  reformattedArray;
+      .done(function(json) {
+        
+        reformattedArray = json.transactions.map( function(tx) { 
+          return [tx.verwerkingsDatum, tx.saldoNaBoeking];
+        });
+        reformattedArray;
 
-                  drawChart(reformattedArray);
-                });
+        drawChart(reformattedArray);
+      });
+
+      document.getElementById('up.wav').play();
+      document.getElementById('down.wav').play();
 
       function drawChart(data) {
-          var c = document.getElementById("myCanvas");
-          var ctx = c.getContext("2d");
-          var w = window.innerWidth; 
-          var h = window.innerHeight;
+        var c = document.getElementById("myCanvas");
+        var ctx = c.getContext("2d");
+        var w = window.innerWidth; 
+        var h = window.innerHeight;
 
-          ctx.canvas.width = w; 
-          ctx.canvas.height = h;
-          var y;
-          var barWidth = 20;
+        ctx.canvas.width = w; 
+        ctx.canvas.height = h;
+        var y;
+        var barWidth = 20;
 
-          var source = Rx.Observable.interval(1000).take(data.length)
+        var source = Rx.Observable.interval(1000).take(data.length)
 
-          source.map( function (v) {
-            return { "cnt":v, "value":data[v] };
-          }).subscribe(
-            function (x) {
-              console.log(x);
-              drawBar(x);
-            });
+        source.map( function (v) {
+          return { "cnt":v, "value":data[v] };
+        }).subscribe(
+        function (x) {
+          console.log(x);
+          drawBar(x);
+        });
 
-          function drawBar(d) {
-            var amount = d.value[1];
-            y = d.cnt*barWidth + d.cnt*5;
-            var maxRatio = (w/2) / Math.log(20000);
-            var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
+        function drawBar(d) {
+          var amount = d.value[1];
+          y = d.cnt*barWidth + d.cnt*5;
+          var maxRatio = (w/2) / Math.log(20000);
+          var finalBarLength = Math.log(Math.abs(amount)) * maxRatio;
 
-            console.log("finalBarLength="+finalBarLength+", amount="+amount);
+          console.log("finalBarLength="+finalBarLength+", amount="+amount);
 
-            var percent = 0;
-            animate();
-            function animate() {
+          var percent = 0;
+          animate();
+          function animate() {
                 // if not 100% done, request another frame
                 if (percent < 100) {
-                    requestAnimationFrame(animate);
+                  requestAnimationFrame(animate);
                     percent=percent+2; // increments with 1 cause incorrect behaviour
-                }
+                  }
                 // Drawing code goes here
                 var tmpBarLength = finalBarLength * percent / 100;
                 // console.log(tmpBarLength);
-                if (amount < 0) tmpBarLength = -tmpBarLength;
-                ctx.fillStyle = getColor(percent, amount > 0);
+                if (amount > 0) {
+                  document.getElementById('up').play();
+                  ctx.fillStyle = getColor(percent, true);
+                } else {
+                  document.getElementById('down').play();
+                  tmpBarLength = -tmpBarLength;
+                  ctx.fillStyle = getColor(percent, false);
+                }
+                
                 ctx.fillRect(w/2, y, tmpBarLength, barWidth);
+              }
+            }    
+          }
+
+          function getColor(range, positive) {
+            if (positive) {
+              var color = '#00' + range + '00';
+            } else {
+              var color = '#' + range + '0000';
             }
-          }    
-      }
+            return color;
+          }
 
-      function getColor(range, positive) {
-        if (positive) {
-          var color = '#00' + range + '00';
-        } else {
-          var color = '#' + range + '0000';
-        }
-        return color;
-      }
-
-      function getRandomColor() { 
-        var letters = '0123456789ABCDEF'.split(''); 
-        var color = '#'; 
-        for (var i = 0; i < 6; i++) { 
-          color += letters[Math.floor(Math.random() * 16)]; 
-        } 
-        return color;
-      }
-    </script>
+          function getRandomColor() { 
+            var letters = '0123456789ABCDEF'.split(''); 
+            var color = '#'; 
+            for (var i = 0; i < 6; i++) { 
+              color += letters[Math.floor(Math.random() * 16)]; 
+            } 
+            return color;
+          }
+          </script>
 
 
-  </body>
-</html>
+        </body>
+        </html>
