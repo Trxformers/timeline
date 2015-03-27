@@ -65,7 +65,19 @@
             barLength = Math.log(Math.abs(amount)) * maxRatio;
             console.log("barLength="+barLength+", amount="+amount);
             if (amount < 0) barLength = -barLength;
-            ctx.fillRect(w / 2, y, barLength, barWidth);
+            ctx.fillRect(w/2, y, barLength, barWidth);
+            // var fps = 5;
+            // var percent = 0;
+            // animate();
+            // function animate() {
+            //     // if not 100% done, request another frame
+            //     if (percent++ < 100) {
+            //         requestAnimationFrame(animate);
+            //     }
+            //     // Drawing code goes here
+            //     var barLength = (w/2) * percent / 100;
+            //     ctx.fillRect(w/2, y, barLength, barWidth);
+            // }
           }    
       }
 
