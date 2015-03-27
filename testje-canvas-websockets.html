@@ -19,6 +19,10 @@
   <canvas id="myCanvas" width="100%" style="border:1px solid #c3c3c3;">
     Your browser does not support the HTML5 canvas tag.
   </canvas>
+  <canvas id="myCanvasTop" width="100%" style="border:1px solid #c3c3c3;">
+    Your browser does not support the HTML5 canvas tag.
+  </canvas>  
+
   <audio style="display: none;" preload id="giggle" src="snd/giggle.mp3" type="audio/mpeg">
   <audio style="display: none;" preload id="doh" src="snd/doh.mp3" type="audio/mpeg">
 
@@ -53,6 +57,7 @@ function appendMessage(msg) {
       
       //appendMessage(event.data);   // voeg toe aan scherm
       drawBar(message);
+      drawLine(y, message.saldoNaBoeking);
       console.log("onmessage");
       console.log(message);
     };
@@ -73,10 +78,6 @@ if (window.WebSocket === undefined) {
 
 /////
 
-
-
-
-  
     var graph;
     var xPadding = 30;
     var yPadding = 30;
@@ -86,34 +87,32 @@ if (window.WebSocket === undefined) {
  
 
        var c = document.getElementById("myCanvas");
+       var ctop = document.getElementById("myCanvasTop");
       var ctx = c.getContext("2d");
+      var ctxTop = c.getContext("2d");
       var w = window.innerWidth; 
       var h = window.innerHeight;
 
       ctx.canvas.width = w; 
-      ctx.canvas.height = h;     
+      ctx.canvas.height = h;
+      ctxTop.canvas.width = w;
+      ctxTop.canvas.height = h;
     
-   
-
-
-    
-      
-      
-
-      
 
       function shiftUp(margin) {
         // shift everything to the left:
         var imageData = ctx.getImageData(0, margin, ctx.canvas.width, ctx.canvas.height-margin);
+        var imageData = ctxTop.getImageData(0, margin, ctxTop.canvas.width, ctxTop.canvas.height-margin);
         ctx.putImageData(imageData, 0, 0);
+        ctxTop.putImageData(imageData, 0, 0);
         // now clear the right-most pixels:
         ctx.clearRect(ctx.canvas.width, margin, 0, ctx.canvas.height-margin);
+        ctxTop.clearRect(ctxTop.canvas.width, margin, 0, ctxTop.canvas.height-margin);
       }
 
       function drawBar(d) {
         console.log("drawBar("+d+")");
         console.log(d);
-
 
         var amount = d.bedrag;
         console.log("amount="+amount);
@@ -133,40 +132,45 @@ if (window.WebSocket === undefined) {
         var percent = 0;
         animate();
         function animate() {
-            // if not 100% done, request another frame
-            if (percent < 100) {
-              requestAnimationFrame(animate);
-              percent=percent+2; // increments with 1 cause incorrect behaviour
-            }
-            // Drawing code goes here
-            var tmpBarLength = finalBarLength * percent / 100;
-            if (amount > 0) {
-              ctx.fillStyle = getColor(percent, true);
-            } else {
-              tmpBarLength = -tmpBarLength;
-              ctx.fillStyle = getColor(percent, false);
-            }
-            ctx.fillRect(w/2, y, tmpBarLength, barWidth); 
+          // if not 100% done, request another frame
+          if (percent < 100) {
+            requestAnimationFrame(animate);
+            percent=percent+2; // increments with 1 cause incorrect behaviour
           }
+          // Drawing code goes here
+          var tmpBarLength = finalBarLength * percent / 100;
+          if (amount > 0) {
+            ctx.fillStyle = getColor(percent, true);
+          } else {
+            tmpBarLength = -tmpBarLength;
+            ctx.fillStyle = getColor(percent, false);
+          }
+          ctx.fillRect(w/2, y, tmpBarLength, barWidth); 
+        }
       }
 
-      
-      function drawLine(d) {
+      //
+      function drawLine(y, saldo) {
         
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = '#333';
-        ctx.font = 'italic 8pt sans-serif';
-        ctx.textAlign = "center";
+        ctxTop.lineWidth = 6;
+        ctxTop.strokeStyle = '#ff0';
 
-        y = 5; 
-        ctx.beginPath();
+       // var maxRatio = (w/2) / Math.log(10000);
+       // var x = Math.log(Math.abs(saldo)) * maxRatio;
+        var x = saldo / 50;
+        var center = w/2;
+        x += center;
+
+        ctxTop.beginPath();
         //goto first point
-        console.log('start at x:' + (w/2) + ' y:' + y-barWidth);
-        ctx.moveTo(w/2, y-barWidth);
+        console.log('start at x:' + (w/2) + ' y:' + y);
+        //ctx.moveTo(center, y);
 
-        console.log('end at x:' + d.value[2] + ' y:' + y);
-        ctx.lineTo(d.value[2], y);
-        ctx.stroke();
+        //console.log('end at x:' + x + ' y:' + y);
+        //ctx.lineTo(x, y);
+        // ctxTop.globalCompositeOperation = "destination-over";
+        ctxTop.arc(x,y, 1, 0, 2*Math.PI);
+        ctxTop.stroke();
       
       }
 
